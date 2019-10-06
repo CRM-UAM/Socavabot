@@ -41,6 +41,10 @@ Stress Analysis:
 Optimized Design (Mass reduction 80%):  
 <img src="3DModels/WheelHub/current.jpg" alt="drawing" width="400"/>
 
+### Assemble
+
+![](Graphics/HubWheelAssemble.gif)
+
 ## Schematics
 The connections between the motors, ESP-12 and H-bridge:  
 
