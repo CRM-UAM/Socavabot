@@ -45,7 +45,7 @@ void setup() {
     delay(100);
   }
   
-  Serial.print("AP initiated");
+  Serial.print("AP initiated ");
   Serial.println(SSID);
   Serial.print("IP address:\t");
   Serial.println(WiFi.softAPIP());
@@ -99,6 +99,9 @@ void loop() {
       boost = recv[2];
     }
     Serial.printf("UDP packet contents: %x\n", recv);
+    Serial.printf("GAS: %d DIR: %d BOOST: %d\n", gas, dir, boost);
+    Udp.endPacket();
+    bzero(recv, BUFFER_LEN);
 
     // send back a reply, to the IP address and port we got the packet from
     /*Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
