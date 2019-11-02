@@ -7,6 +7,7 @@
 #define MOT_LEFT_BCK 12
 #define MOT_RIGHT_FWD 13
 #define MOT_RIGHT_BCK 14
+#define TUNELADORA 10
 
 #define V 350
 #define V_TURN 500
@@ -102,6 +103,21 @@ void loop() {
     Serial.printf("GAS: %d DIR: %d BOOST: %d\n", gas, dir, boost);
     Udp.endPacket();
     bzero(recv, BUFFER_LEN);
+
+    s
+
+    if(gas == 1){
+      analogWrite(MOT_RIGHT_FWD, 1000);
+      analogWrite(MOT_RIGHT_BCK, 0);
+      analogWrite(MOT_LEFT_FWD, 1000);
+      analogWrite(MOT_LEFT_BCK, 0);
+    }else if (gas == 255){
+      analogWrite(MOT_RIGHT_FWD, 0);
+      analogWrite(MOT_RIGHT_BCK, 1000);
+      analogWrite(MOT_LEFT_FWD, 0);
+      analogWrite(MOT_LEFT_BCK, 1000);
+      
+    }
 
     // send back a reply, to the IP address and port we got the packet from
     /*Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
