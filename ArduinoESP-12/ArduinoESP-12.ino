@@ -2,21 +2,24 @@
 #include <WiFiUdp.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <Servo.h>
 
 #define MOT_LEFT_FWD 16
 #define MOT_LEFT_BCK 12
 #define MOT_RIGHT_FWD 13
 #define MOT_RIGHT_BCK 14
-#define TUNELADORA 10
+#define TUNELA 5
 
-#define V 350
-#define V_TURN 500
-#define V_FAST 700
+#define V 600
+#define V_FAST 1023
+#define V_TURN 700
+#define V_TURN_FAST 1023
+Servo tuneladora;
 
-#define SSID "InfernalRoombaAP"
-#define PSSWD "12345678"  // *** CHANGE THIS **** //
+#define SSID "InfernalTuneladoraAP"
+#define PSSWD "tevoyatunelarcrackk"  // *** CHANGE THIS **** //
 #define UDP_PORT 42069 // local port to listen on
-#define BUFFER_LEN 3 // bytes
+#define BUFFER_LEN 4 // bytes
 
 enum directions {fwd, bck};
 enum motors {left, right};
@@ -25,8 +28,11 @@ WiFiUDP Udp;
 char recv[BUFFER_LEN];  // buffer for incoming data
 
 void setup() {
-  delay(1000);
-
+  
+  //delay(1000);
+  tuneladora.attach(TUNELA);
+  tuneladora.writeMicroseconds(1000);
+  delay(5000);
   pinMode(MOT_LEFT_FWD, OUTPUT);
   pinMode(MOT_LEFT_BCK, OUTPUT);
   pinMode(MOT_RIGHT_FWD, OUTPUT);
@@ -85,7 +91,7 @@ void execute_command(int axis, int value){
 
 void loop() {
   int packetSize = Udp.parsePacket();
-  int_fast8_t len, gas, dir;
+  int_fast8_t len, gas, dir, tun;
   bool boost;
 
   if (packetSize)
@@ -98,26 +104,79 @@ void loop() {
       gas = recv[0];
       dir = recv[1];
       boost = recv[2];
+      tun = recv[3];
     }
     Serial.printf("UDP packet contents: %x\n", recv);
-    Serial.printf("GAS: %d DIR: %d BOOST: %d\n", gas, dir, boost);
+    Serial.printf("GAS: %d DIR: %d BOOST: %d TUN: %d\n", gas, dir, boost,tun);
     Udp.endPacket();
     bzero(recv, BUFFER_LEN);
-
-    s
-
-    if(gas == 1){
-      analogWrite(MOT_RIGHT_FWD, 1000);
-      analogWrite(MOT_RIGHT_BCK, 0);
-      analogWrite(MOT_LEFT_FWD, 1000);
-      analogWrite(MOT_LEFT_BCK, 0);
-    }else if (gas == 255){
-      analogWrite(MOT_RIGHT_FWD, 0);
-      analogWrite(MOT_RIGHT_BCK, 1000);
-      analogWrite(MOT_LEFT_FWD, 0);
-      analogWrite(MOT_LEFT_BCK, 1000);
-      
+    
+    if(tun == 1) {
+      tuneladora.write(100);
+    } else if(tun == 0){
+      tuneladora.write(0);
     }
+
+
+    /*
+    #define V 350
+    #define V_TURN 500
+    #define V_FAST 700
+    */
+    if(gas == 1) { /* forward */
+        if (boost == 1) {
+          analogWrite(MOT_RIGHT_FWD, V_FAST);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, V_FAST);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }else {
+          analogWrite(MOT_RIGHT_FWD, V);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, V);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }
+    }else if (gas == 255){ /* reverse */
+        if (boost == 1){
+          analogWrite(MOT_RIGHT_FWD, V_FAST);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, V_FAST);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }else {
+          analogWrite(MOT_RIGHT_FWD, V);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, V);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }
+    }
+
+    if(dir == 1) { /* right turn */
+      if (boost == 1) {
+          analogWrite(MOT_RIGHT_FWD, 0);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, V_TURN_FAST);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }else {
+          analogWrite(MOT_RIGHT_FWD, 0);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, V_TURN);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }
+    } else if(dir == 255) { /* turn left */
+      if (boost == 1){
+          analogWrite(MOT_RIGHT_FWD, V_TURN_FAST);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, 0);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }else {
+          analogWrite(MOT_RIGHT_FWD, V_TURN);
+          analogWrite(MOT_RIGHT_BCK, 0);
+          analogWrite(MOT_LEFT_FWD, 0);
+          analogWrite(MOT_LEFT_BCK, 0);
+        }
+    }
+
+    
+    
 
     // send back a reply, to the IP address and port we got the packet from
     /*Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
