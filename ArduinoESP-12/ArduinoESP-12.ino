@@ -12,7 +12,8 @@
 
 #define V 600
 #define V_FAST 1023
-#define V_TURN 700
+#define V_TURN 600
+#define V_TURN_GAS 400
 #define V_TURN_FAST 1023
 Servo tuneladora;
 
@@ -61,33 +62,124 @@ void setup() {
   Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), UDP_PORT);
 }
 
-/*void set_motor(motors motor, int speed, directions dir){
-  if (dir == fwd){
-    analogWrite(MOT_RIGHT_FWD ? motor == right : MOT_LEFT_FWD, speed);
-  }else{
-    analogWrite(MOT_RIGHT_BCK ? motor == right : MOT_LEFT_BCK, speed);
-  }  
+void forward() {
+  analogWrite(MOT_RIGHT_FWD, V);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V);
+  analogWrite(MOT_LEFT_BCK, 0);
 }
 
-void move_vertical(directions dir, int speed){
-  set_motor(left, speed, dir);
-  set_motor(right, speed, dir);
+void forward_boost() {
+  analogWrite(MOT_RIGHT_FWD, V_FAST);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V_FAST);
+  analogWrite(MOT_LEFT_BCK, 0);
 }
 
-void execute_command(int axis, int value){
-  directions dir = fwd ? value > 0 : bck;
+void forward_right() {
+  analogWrite(MOT_RIGHT_FWD, V_TURN_GAS);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V_TURN);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
 
-  switch (axis){
-  case 1: // Y axis left joystick
-    move_vertical(dir, value);
-    break;
-  case 2: // X axis right joystick
-    move_horizontal(dir, value);
-    break;
-  default:
-    break;
-  }
-}*/
+void forward_right_boost() {
+  analogWrite(MOT_RIGHT_FWD, V_TURN);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V_TURN_FAST);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
+
+void forward_left() {
+  analogWrite(MOT_RIGHT_FWD, V_TURN);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V_TURN_GAS);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
+
+void forward_left_boost() {
+  analogWrite(MOT_RIGHT_FWD, V_TURN_FAST);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V_TURN);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
+
+void turn_right() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V_TURN);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
+
+void turn_right_boost() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, V_TURN_FAST);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
+
+void turn_left() {
+  analogWrite(MOT_RIGHT_FWD, V_TURN);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
+
+void turn_left_boost() {
+  analogWrite(MOT_RIGHT_FWD, V_TURN_FAST);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
+
+void backwards() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, V);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V);
+}
+
+void backwards_boost() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, V_FAST);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_FAST);
+}
+
+void backwards_left() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, V_TURN);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN_GAS);
+}
+
+void backwards_left_boost() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, V_TURN_FAST);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN);
+}
+
+void backwards_right() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, V_TURN_GAS);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN);
+}
+
+void backwards_right_boost() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, V_TURN);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN_FAST);
+}
+
+void stop() {
+  analogWrite(MOT_RIGHT_FWD, 0);
+  analogWrite(MOT_RIGHT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, 0);
+}
 
 void loop() {
   int packetSize = Udp.parsePacket();
@@ -117,65 +209,68 @@ void loop() {
       tuneladora.write(0);
     }
 
-
-    /*
-    #define V 350
-    #define V_TURN 500
-    #define V_FAST 700
-    */
-    if(gas == 1) { /* forward */
-        if (boost == 1) {
-          analogWrite(MOT_RIGHT_FWD, V_FAST);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, V_FAST);
-          analogWrite(MOT_LEFT_BCK, 0);
-        }else {
-          analogWrite(MOT_RIGHT_FWD, V);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, V);
-          analogWrite(MOT_LEFT_BCK, 0);
+    if(gas == 0) { /* stop */
+      if(dir == 1) {
+        if(boost == 1) {
+          turn_right_boost();
+        } else if(boost == 0) {
+          turn_right();
+        }     
+      } else if(dir == 255) {
+        if(boost == 1) {
+          turn_left_boost();
+        } else if(boost == 0) {
+          turn_left();
+        }  
+      } else if(dir == 0) {
+        if(boost == 1) { 
+          stop();
+        } else if(boost == 0){
+          stop();
         }
+      }
+    } else if(gas == 1) { /* forward */
+      if(dir == 1) {
+        if(boost == 1) { 
+          forward_right_boost();
+        } else if(boost == 0){
+          forward_right();
+        }
+      } else if(dir == 255) {
+        if (boost == 1) { 
+          forward_right_boost();
+        } else if(boost == 0){
+          forward_right();
+        }
+      } else if(dir == 0) {
+        if(boost == 1) { 
+          forward_boost();
+        } else if(boost == 0){
+          forward();
+        }
+      }
     }else if (gas == 255){ /* reverse */
-        if (boost == 1){
-          analogWrite(MOT_RIGHT_FWD, V_FAST);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, V_FAST);
-          analogWrite(MOT_LEFT_BCK, 0);
-        }else {
-          analogWrite(MOT_RIGHT_FWD, V);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, V);
-          analogWrite(MOT_LEFT_BCK, 0);
+      if(dir == 1) {
+        if(boost == 1) { 
+          backwards_right_boost();
+        } else if(boost == 0){
+          backwards_right();
         }
+      } else if(dir == 255) {
+        if (boost == 1) { 
+          backwards_left_boost();
+        } else if(boost == 0){
+          backwards_left();
+        }
+      } else if(dir == 0) {
+        if (boost == 1) { 
+          backwards_boost();
+        } else if(boost == 0){
+          backwards();
+        }
+      }
     }
-
-    if(dir == 1) { /* right turn */
-      if (boost == 1) {
-          analogWrite(MOT_RIGHT_FWD, 0);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, V_TURN_FAST);
-          analogWrite(MOT_LEFT_BCK, 0);
-        }else {
-          analogWrite(MOT_RIGHT_FWD, 0);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, V_TURN);
-          analogWrite(MOT_LEFT_BCK, 0);
-        }
-    } else if(dir == 255) { /* turn left */
-      if (boost == 1){
-          analogWrite(MOT_RIGHT_FWD, V_TURN_FAST);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, 0);
-          analogWrite(MOT_LEFT_BCK, 0);
-        }else {
-          analogWrite(MOT_RIGHT_FWD, V_TURN);
-          analogWrite(MOT_RIGHT_BCK, 0);
-          analogWrite(MOT_LEFT_FWD, 0);
-          analogWrite(MOT_LEFT_BCK, 0);
-        }
-    }
-
-    
+   
     
 
     // send back a reply, to the IP address and port we got the packet from
