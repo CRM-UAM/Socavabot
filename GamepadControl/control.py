@@ -15,9 +15,14 @@ joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_coun
 for joy in joysticks:
   joy.init()
 
+pygame.mixer.init()
+pygame.mixer.music.load("../Audio/SocavadorTrimmed.mp3")
+pygame.mixer.music.play()
+
+
 def send_to_robot(command):
   byts = list(map(lambda n: n.to_bytes(1, byteorder='big', signed=True), command))
-  print(byts)
+  #print(byts)
   sock = socket.socket(socket.AF_INET, # Internet
                        socket.SOCK_DGRAM) # UDP
   sock.sendto(b''.join(byts), (UDP_IP, UDP_PORT))
