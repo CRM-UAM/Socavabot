@@ -25,16 +25,17 @@ def send_to_robot(command):
 while running:
   for event in pygame.event.get():
     event_values = event.__dict__
+    #print(event)
 
     if event.type == pygame.QUIT:
       running = False
       break
     elif event.type == pygame.JOYAXISMOTION:
       axis = event_values['axis'] # Value range: [0-3] (int)
-      value = math.ceil(event_values['value']) # Value range: [0-1] (float)
+      value = int(event_values['value']) # Value range: [0-1] (float)
       if axis == 1:
         gas = -value
-      elif axis == 2:
+      elif axis == 3:
         direction = value
     elif event.type == pygame.JOYBUTTONDOWN:
       button = event_values['button']
