@@ -1,6 +1,7 @@
-This is the respository which host the source code, 3D models and schematics for Infernal Roomba combat robot.
+This is the respository which host the source code, 3D models and schematics for Socavabot combat robot.
 
-![](Graphics/InfernalRoomba.gif)
+![](Graphics/cover1.jpg)
+![](Graphics/cover2.jpg)
 
 ## Parts
 | Name               |      Dimensions     | Weight | Image         |
@@ -12,23 +13,12 @@ This is the respository which host the source code, 3D models and schematics for
 | L298N H-Bridge     |    50x52 mm         |        | <img src="3DModels/L298N/image.jpg" alt="drawing" width="200"/> |
 | Li-Po Battery      |  60x30x15 mm        |        | <img src="3DModels/Battery/image.jpg" alt="drawing" width="200"/> |
 | Brushless Motor    |                     |        | <img src="3DModels/BrushlessMotor/image.jpg" alt="drawing" width="200"/> |
-| 3D printed chassis | D: 170 mm, H: 60 mm |        | <img src="3DModels/Chassis/image.jpg" alt="drawing" width="200"/> |
+| 3D printed chassis | D: 170 mm, H: 60 mm |        | <img src="3DModels/Chassis/image.png" alt="drawing" width="200"/> |
 | Metal Sheets       |                     |        |               |
 
 ## 3D Model Design
 
 For the `chassis` and the `wheel hub` were applied topology optimization techniques in order to reduce mass:
-
-### Chassis
-
-Original Design:  
-<img src="3DModels/Chassis/original.jpg" alt="drawing" width="300"/>
-
-Stress Analysis:  
-<img src="3DModels/Chassis/stress.jpg" alt="drawing" width="500"/>
-
-Optimized Design (Mass reduction 50%):  
-<img src="3DModels/Chassis/current.jpg" alt="drawing" width="400"/>
 
 ### Wheel Hub
 
