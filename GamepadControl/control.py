@@ -5,6 +5,8 @@ import math
 UDP_IP = '192.168.4.1'
 UDP_PORT = 42069
 
+flag = 0
+
 BOOST_BUTTONS = [4, 5, 6, 7] #R1,L1,Start,Select
 TUNELADORA_ON = [0] #A
 TUNELADORA_OFF = [1] #B
@@ -45,6 +47,11 @@ while running:
       if button in BOOST_BUTTONS:
         boost = 1
       elif button in TUNELADORA_ON:
+        if flag == 0:
+          pygame.mixer.init()
+          pygame.mixer.music.load("../Audio/SocavadorTrimmed.mp3")
+          pygame.mixer.music.play()
+          flag = 1
         tuneladora = 1
       elif button in TUNELADORA_OFF:
         tuneladora = 0
