@@ -33,7 +33,7 @@ void setup() {
   //delay(1000);
   tuneladora.attach(TUNELA);
   tuneladora.writeMicroseconds(1000);
-  delay(5000);
+  delay(1000);
   pinMode(MOT_LEFT_FWD, OUTPUT);
   pinMode(MOT_LEFT_BCK, OUTPUT);
   pinMode(MOT_RIGHT_FWD, OUTPUT);
@@ -79,57 +79,57 @@ void forward_boost() {
 void forward_right() {
   analogWrite(MOT_RIGHT_FWD, V_TURN_GAS);
   analogWrite(MOT_RIGHT_BCK, 0);
-  analogWrite(MOT_LEFT_FWD, V_TURN);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN);
 }
 
 void forward_right_boost() {
   analogWrite(MOT_RIGHT_FWD, V_TURN);
   analogWrite(MOT_RIGHT_BCK, 0);
-  analogWrite(MOT_LEFT_FWD, V_TURN_FAST);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN_FAST);
 }
 
 void forward_left() {
   analogWrite(MOT_RIGHT_FWD, V_TURN);
   analogWrite(MOT_RIGHT_BCK, 0);
-  analogWrite(MOT_LEFT_FWD, V_TURN_GAS);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN_GAS);
 }
 
 void forward_left_boost() {
   analogWrite(MOT_RIGHT_FWD, V_TURN_FAST);
   analogWrite(MOT_RIGHT_BCK, 0);
-  analogWrite(MOT_LEFT_FWD, V_TURN);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN);
 }
 
 void turn_right() {
   analogWrite(MOT_RIGHT_FWD, 0);
   analogWrite(MOT_RIGHT_BCK, 0);
-  analogWrite(MOT_LEFT_FWD, V_TURN);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN);
 }
 
 void turn_right_boost() {
   analogWrite(MOT_RIGHT_FWD, 0);
   analogWrite(MOT_RIGHT_BCK, 0);
-  analogWrite(MOT_LEFT_FWD, V_TURN_FAST);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_FWD, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN_FAST);
 }
 
 void turn_left() {
   analogWrite(MOT_RIGHT_FWD, V_TURN);
   analogWrite(MOT_RIGHT_BCK, 0);
   analogWrite(MOT_LEFT_FWD, 0);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN);
 }
 
 void turn_left_boost() {
   analogWrite(MOT_RIGHT_FWD, V_TURN_FAST);
   analogWrite(MOT_RIGHT_BCK, 0);
   analogWrite(MOT_LEFT_FWD, 0);
-  analogWrite(MOT_LEFT_BCK, 0);
+  analogWrite(MOT_LEFT_BCK, V_TURN_FAST);
 }
 
 void backwards() {
@@ -204,9 +204,9 @@ void loop() {
     bzero(recv, BUFFER_LEN);
     
     if(tun == 1) {
-      tuneladora.write(100);
+      tuneladora.writeMicroseconds(2000);
     } else if(tun == 0){
-      tuneladora.write(0);
+      tuneladora.writeMicroseconds(1000);
     }
 
     if(gas == 0) { /* stop */
