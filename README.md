@@ -18,6 +18,10 @@ This is the respository which host the source code, 3D models and schematics for
 
 ## 3D Model Design
 
+Initial concept we made "Infernal roomba"
+
+![](Graphics/InfernalRoomba.gif)
+
 For the `chassis` and the `wheel hub` were applied topology optimization techniques in order to reduce mass:
 
 ### Wheel Hub
